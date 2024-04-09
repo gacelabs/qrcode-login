@@ -5,7 +5,8 @@ body, html {
   height: 100%;
 }
 #app {
-  background: #263238;
+  /* background: #263238; */
+  background: url(https://mcgi.tv/wp-content/uploads/2022/02/IMG_1633-scaled.jpg) no-repeat center center;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
@@ -22,7 +23,8 @@ body, html {
 .sidebar h2 {
   font-weight: normal;
   font-size: 1.0rem;
-  background: #607d8b;
+  /* background: #607d8b; */
+  background: #3a89ff;
   color: #fff;
   padding: 10px;
   margin: 0;
