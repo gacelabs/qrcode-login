@@ -13,8 +13,10 @@ var app = new Vue({
 		self.scanner.addListener('scan', function (content, image) {
 			try {
 				var json = JSON.parse(content);
+				json['date'] = getDateNow();
 				if (saveLocal(json)) {
 					self.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+					alert('Successful!');
 				} else {
 					alert('Already Exist!');
 				}
@@ -202,9 +204,11 @@ function handleDrop(event) {
 					var code = jsQR(imageData.data, imageData.width, imageData.height);
 					
 					var json = JSON.parse(code.data);
+					json['date'] = getDateNow();
 					console.log(json);
 					if (saveLocal(json)) {
 						app.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+						alert('Successful!');
 					} else {
 						alert('Already Exist!');
 					}
@@ -218,4 +222,27 @@ function handleDrop(event) {
 			alert('Please drop an image file.');
 		}
 	}
+}
+
+function getDateNow(timestamp) {
+	// Create a new Date object
+	if (timestamp != undefined) {
+		var currentDate = new Date(timestamp);
+	} else {
+		var currentDate = new Date();
+	}
+
+	// Get the individual date and time components
+	var year = currentDate.getFullYear();
+	var month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+	var day = String(currentDate.getDate()).padStart(2, '0');
+	var hours = String(currentDate.getHours()).padStart(2, '0');
+	var minutes = String(currentDate.getMinutes()).padStart(2, '0');
+	var seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+	// Combine the components into a single string
+	var dateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+	console.log(dateTimeString); // Output the formatted date and time
+	return dateTimeString;
 }
