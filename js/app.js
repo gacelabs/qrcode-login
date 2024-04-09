@@ -47,10 +47,12 @@ var app = new Vue({
 			this.cameras.forEach(function (cam) {
 				cam.stop();
 			});
+			this.scanner.stop();
 			try {
 				this.scanner.start(camera);
 			} catch (e) {
 				console.error(e);
+				this.scanner.stop();
 				this.cameras.forEach(function (cam) {
 					if (cam.id == prevCameraId) {
 						this.scanner.start(cam);
