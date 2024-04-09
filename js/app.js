@@ -216,16 +216,21 @@ function handleDrop(event) {
 					var imageData = ctx.getImageData(0, 0, qrCodeContainer.width, qrCodeContainer.height);
 					// Decode the QR code from the image data
 					var code = jsQR(imageData.data, imageData.width, imageData.height);
-					
-					var json = JSON.parse(code.data);
-					json['date'] = getDateNow();
-					// console.log(json);
-					if (saveLocal(json)) {
-						app.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
-						alert('"' + json.lastname + ', ' + json.firstname +'" was Successfully logged in!');
+
+					if (code) {
+						var json = JSON.parse(code.data);
+						json['date'] = getDateNow();
+						// console.log(json);
+						if (saveLocal(json)) {
+							app.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+							alert('"' + json.lastname + ', ' + json.firstname +'" was Successfully logged in!');
+						} else {
+							alert('"' + json.lastname + ', ' + json.firstname +'" Already Exist!');
+						}
 					} else {
-						alert('"' + json.lastname + ', ' + json.firstname +'" Already Exist!');
+						alert('Invalid QR Code!');
 					}
+
 					previewImage.style.display = 'none';
 				}, 1000);
 				
