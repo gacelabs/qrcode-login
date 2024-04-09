@@ -42,27 +42,13 @@ var app = new Vue({
 			return name || '(unknown)';
 		},
 		selectCamera: function (camera) {
-			var prevCameraId = this.activeCameraId;
-			this.activeCameraId = camera.id;
-			this.cameras.forEach(function (cam) {
-				cam.stop();
-			});
-			setTimeout(() => {
-				this.scanner.stop();
-				setTimeout(() => {
-					try {
-						this.scanner.start(camera);
-					} catch (e) {
-						console.error(e);
-						this.scanner.stop();
-						this.cameras.forEach(function (cam) {
-							if (cam.id == prevCameraId) {
-								this.scanner.start(cam);
-							}
-						});
-					}
-				}, 700);
-			}, 900);
+			if (this.activeCameraId !== camera.id) {
+				this.activeCameraId = camera.id;
+				if (this.scanner) {
+					this.scanner.stop(); // Stop the current scanner
+					this.scanner.start(camera); // Start the scanner with the new camera
+				}
+			}
 		}
 	}
 });
