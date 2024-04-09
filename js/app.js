@@ -11,12 +11,12 @@ var app = new Vue({
 		var self = this;
 		self.scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 5 });
 		self.scanner.addListener('scan', function (content, image) {
+			var json = JSON.parse(content);
 			try {
 				if (saveLocal(json)) {
-					var json = JSON.parse(content);
 					self.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
 				} else {
-					alert('Invalid QR Code!');
+					alert('Already Exist!');
 				}
 			} catch (error) {
 				console.log(error);
