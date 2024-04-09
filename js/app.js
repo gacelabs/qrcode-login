@@ -11,12 +11,13 @@ var app = new Vue({
 		var self = this;
 		self.scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 5 });
 		self.scanner.addListener('scan', function (content, image) {
-			try {
-				var json = JSON.parse(content);
-				saveLocal(json);
-				self.scans.unshift({ date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
-			} catch (error) {
-				self.scans.unshift({ date: +(Date.now()), content: 'Invalid QR Code!' });
+			var json = JSON.parse(content);
+			if (saveLocal(json)) {
+				try {
+					self.scans.unshift({ date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+				} catch (error) {
+					self.scans.unshift({ date: +(Date.now()), content: 'Invalid QR Code!' });
+				}
 			}
 		});
 		Instascan.Camera.getCameras().then(function (cameras) {
@@ -59,6 +60,9 @@ function saveLocal(json) {
 	if (result.length == 0) {
 		dataObject.push(json);
 		localStorage.setItem('dataObject', JSON.stringify(dataObject));
+		return true;
+	} else {
+		return false;
 	}
 }
 
