@@ -1,3 +1,4 @@
+var dataObject = [];
 var app = new Vue({
 	el: '#app',
 	data: {
@@ -12,6 +13,7 @@ var app = new Vue({
 		self.scanner.addListener('scan', function (content, image) {
 			try {
 				var json = JSON.parse(content);
+				saveLocal(json);
 				self.scans.unshift({ date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
 			} catch (error) {
 				self.scans.unshift({ date: +(Date.now()), content: 'Invalid QR Code!' });
@@ -40,26 +42,32 @@ var app = new Vue({
 	}
 });
 
+document.getElementById('to-csv').addEventListener('click', function (e) {
+	var jsonString = localStorage.getItem('dataObject');
+	let d = new Date();
+	downloadCSV(jsonString, (d.toISOString().split('T')[0])+'_logged-in-data.csv');
+});
+
+function saveLocal(json) {
+	dataObject.push(json);
+	localStorage.setItem('dataObject', JSON.stringify(dataObject));
+}
+
 function generateQRCode(e) {
 	e.preventDefault();
 	var id = document.getElementById('id').value;
 	var firstname = document.getElementById('firstname').value;
 	var lastname = document.getElementById('lastname').value;
+	var json = { id: id, firstname: firstname, lastname: lastname };
+	saveLocal(json);
 
-	var qrInput = JSON.stringify({ id: id, firstname: firstname, lastname: lastname });
-	console.log(qrInput);
+	var qrInput = JSON.stringify(json);
+	// console.log(qrInput);
 	var qrCodeContainer = document.getElementById("qr-code");
 
 	QRCode.toCanvas(qrCodeContainer, qrInput, function (error) {
 		if (error) console.error(error)
 		console.log('success!');
-		/* var image = new Image();
-		image.src = qrCodeContainer.toDataURL("image/png");
-		var link = document.createElement('a');
-		link.download = id+'-qrcode.png';
-		link.href = image.src;
-		link.click(); */
-		
 		var pngData = qrCodeContainer.toDataURL("image/png");
 		var img = document.getElementById("qr-code-img");
 		img.src = pngData;
@@ -67,3 +75,50 @@ function generateQRCode(e) {
 		img.style.display = 'block';
 	});
 }
+
+function downloadCSV(jsonData, filename) {
+	// Parse JSON string to JavaScript object
+	var data = JSON.parse(jsonData);
+
+	// Convert JSON to CSV
+	var csv = convertJSONToCSV(data);
+
+	// Create Blob object
+	var blob = new Blob([csv], { type: 'text/csv' });
+
+	// Create URL for Blob object
+	var url = URL.createObjectURL(blob);
+
+	// Create anchor element
+	var a = document.createElement('a');
+
+	// Set href and download attributes
+	a.href = url;
+	a.download = filename;
+
+	// Simulate click on anchor element
+	a.click();
+
+	// Clean up
+	URL.revokeObjectURL(url);
+}
+
+function convertJSONToCSV(jsonData) {
+	var csv = '';
+
+	// Extract column headers
+	var headers = Object.keys(jsonData[0]);
+	csv += headers.join(',') + '\n';
+
+	// Extract data rows
+	jsonData.forEach(function (item) {
+		var row = [];
+		headers.forEach(function (header) {
+			row.push(item[header]);
+		});
+		csv += row.join(',') + '\n';
+	});
+
+	return csv;
+}
+
