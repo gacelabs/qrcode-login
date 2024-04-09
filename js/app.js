@@ -46,7 +46,15 @@ var app = new Vue({
 				this.activeCameraId = camera.id;
 				if (this.scanner) {
 					this.scanner.stop(); // Stop the current scanner
-					this.scanner.start(camera); // Start the scanner with the new camera
+					// Refresh the camera state by restarting the scanner with the same camera
+					this.scanner.start(camera).then(() => {
+						// Scanner started successfully
+						console.log('Scanner started with camera:', camera);
+					}).catch(error => {
+						// Failed to start the scanner
+						console.error('Error starting scanner:', error);
+						alert('Failed to start scanner. Please try again.');
+					});
 				}
 			}
 		}
