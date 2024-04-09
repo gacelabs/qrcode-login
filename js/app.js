@@ -10,8 +10,12 @@ var app = new Vue({
 		var self = this;
 		self.scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 5 });
 		self.scanner.addListener('scan', function (content, image) {
-			var json = JSON.parse(content);
-			self.scans.unshift({ date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+			try {
+				var json = JSON.parse(content);
+				self.scans.unshift({ date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+			} catch (error) {
+				self.scans.unshift({ date: +(Date.now()), content: 'Invalid QR Code!' });
+			}
 		});
 		Instascan.Camera.getCameras().then(function (cameras) {
 			self.cameras = cameras;
