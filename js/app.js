@@ -4,13 +4,13 @@ var app = new Vue({
 		scanner: null,
 		activeCameraId: null,
 		cameras: [],
-		attendances: []
+		scans: []
 	},
 	mounted: function () {
 		var self = this;
 		self.scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 5 });
 		self.scanner.addListener('scan', function (content, image) {
-			self.attendances.unshift({ date: +(Date.now()), content: content });
+			self.scans.unshift({ date: +(Date.now()), content: content });
 		});
 		Instascan.Camera.getCameras().then(function (cameras) {
 			self.cameras = cameras;
@@ -21,7 +21,7 @@ var app = new Vue({
 				console.error('No cameras found.');
 			}
 		}).catch(function (e) {
-			console.error(e, self.attendances);
+			console.error(e);
 		});
 	},
 	methods: {
