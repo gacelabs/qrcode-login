@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<title>QR Code Login</title>
 		<link rel="icon" type="image/png" href="favicon.png">
@@ -6,12 +7,9 @@
 		<script type="text/javascript" src="js/adapter.min.js"></script>
 		<script type="text/javascript" src="js/vue.min.js"></script>
 		<script type="text/javascript" src="js/instascan.min.js"></script>
-		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/3.3.3/adapter.min.js"></script> -->
-		<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.10/vue.min.js"></script> -->
-		<!-- <script type="text/javascript" src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script> -->
 	</head>
 	<body>
-		<div id="app">
+		<div id="app"> <!-- style="background: url(https://mcgi.tv/wp-content/uploads/2022/02/IMG_1633-scaled.jpg) no-repeat center center !important;" -->
 			<div class="sidebar">
 				<section class="cameras">
 					<h2>Cameras</h2>
@@ -27,13 +25,22 @@
 					</ul>
 				</section>
 				<section class="scans">
-					<h2>Logged In QR Codes <button id="to-csv" style="float: right;">CSV</button></h2>
+					<h2>Logged In QR Codes <button id="to-csv" style="float: right;">Export CSV</button></h2>
 					<ul v-if="scans.length === 0">
 						<li class="empty">No scans yet</li>
 					</ul>
 					<transition-group name="scans" tag="ul">
 						<li v-for="scan in scans" :key="scan.date" :title="scan.content">{{ scan.content }}</li>
 					</transition-group>
+				</section>
+				<section class="scans">
+					<h2>Quick Scan</h2>
+					<div id="dropZone">
+						<p>Drag & Drop to scan QR Code Here</p>
+					</div>
+					<center>
+						<img src="" alt="qr-code" style="display: none; cursor: pointer; margin: 10%;" id="qr-code-img">
+					</center>
 				</section>
 				<section class="scans">
 					<h2>QR Code Generator</h2>
@@ -59,15 +66,12 @@
 							</form>
 						</li>
 					</ul>
-					<ul></ul>
 					<canvas id="qr-code"></canvas>
-					<center>
-						<img src="" alt="qr-code" style="display: none; cursor: pointer; margin: 10%;" id="qr-code-img">
-					</center>
 				</section>
 			</div>
 			<div class="preview-container"><video id="preview" autoplay="autoplay" class="active" style="transform: scaleX(-1);"></video></div>
 		</div>
+		<script src="js/jsQR.js"></script>
 		<script src="js/qrcode-gen.js"></script>
 		<script src="js/jsonQ.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>

@@ -77,7 +77,6 @@ function generateQRCode(e) {
 	var firstname = document.getElementById('firstname').value;
 	var lastname = document.getElementById('lastname').value;
 	var json = { id: id, firstname: firstname, lastname: lastname };
-	saveLocal(json);
 
 	var qrInput = JSON.stringify(json);
 	// console.log(qrInput);
@@ -102,42 +101,121 @@ function downloadCSV(jsonData, filename) {
 	// Convert JSON to CSV
 	var csv = convertJSONToCSV(data);
 
-	// Create Blob object
-	var blob = new Blob([csv], { type: 'text/csv' });
-
-	// Create URL for Blob object
-	var url = URL.createObjectURL(blob);
-
-	// Create anchor element
-	var a = document.createElement('a');
-
-	// Set href and download attributes
-	a.href = url;
-	a.download = filename;
-
-	// Simulate click on anchor element
-	a.click();
-
-	// Clean up
-	URL.revokeObjectURL(url);
+	if (csv != false) {
+		// Create Blob object
+		var blob = new Blob([csv], { type: 'text/csv' });
+	
+		// Create URL for Blob object
+		var url = URL.createObjectURL(blob);
+	
+		// Create anchor element
+		var a = document.createElement('a');
+	
+		// Set href and download attributes
+		a.href = url;
+		a.download = filename;
+	
+		// Simulate click on anchor element
+		a.click();
+	
+		// Clean up
+		URL.revokeObjectURL(url);
+	}
 }
 
 function convertJSONToCSV(jsonData) {
-	var csv = '';
-
-	// Extract column headers
-	var headers = Object.keys(jsonData[0]);
-	csv += headers.join(',') + '\n';
-
-	// Extract data rows
-	jsonData.forEach(function (item) {
-		var row = [];
-		headers.forEach(function (header) {
-			row.push(item[header]);
+	if (jsonData) {
+		var csv = '';
+		// Extract column headers
+		var headers = Object.keys(jsonData[0]);
+		csv += headers.join(',') + '\n';
+	
+		// Extract data rows
+		jsonData.forEach(function (item) {
+			var row = [];
+			headers.forEach(function (header) {
+				row.push(item[header]);
+			});
+			csv += row.join(',') + '\n';
 		});
-		csv += row.join(',') + '\n';
-	});
+		return csv;
+	} else {
+		return false;
+	}
+}
+// Get references to the drop zone and the preview image
+var dropZone = document.getElementById('dropZone');
+var previewImage = document.getElementById('qr-code-img');
 
-	return csv;
+// Prevent default drag behaviors
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+	dropZone.addEventListener(eventName, preventDefaults, false);
+});
+
+// Highlight drop area when dragging over it
+['dragenter', 'dragover'].forEach(eventName => {
+	dropZone.addEventListener(eventName, highlight, false);
+});
+
+// Unhighlight drop area when not dragging over it
+['dragleave', 'drop'].forEach(eventName => {
+	dropZone.addEventListener(eventName, unhighlight, false);
+});
+
+// Handle dropped files
+dropZone.addEventListener('drop', handleDrop, false);
+
+function preventDefaults(event) {
+	event.preventDefault();
+	event.stopPropagation();
 }
 
+function highlight() {
+	dropZone.classList.add('highlight');
+}
+
+function unhighlight() {
+	dropZone.classList.remove('highlight');
+}
+
+function handleDrop(event) {
+	var files = event.dataTransfer.files;
+	if (files.length > 0) {
+		var file = files[0];
+		if (file.type.startsWith('image/')) {
+			var reader = new FileReader();
+			reader.onload = function (event) {
+				previewImage.src = event.target.result;
+				previewImage.style.display = 'block';
+
+				var qrCodeContainer = document.getElementById("qr-code");
+
+				setTimeout(() => {
+					// Create a canvas element to draw the image
+					var ctx = qrCodeContainer.getContext('2d');
+					qrCodeContainer.width = previewImage.width;
+					qrCodeContainer.height = previewImage.height;
+					ctx.drawImage(previewImage, 0, 0);
+					// Get the image data from the canvas
+					var imageData = ctx.getImageData(0, 0, qrCodeContainer.width, qrCodeContainer.height);
+					// Decode the QR code from the image data
+					var code = jsQR(imageData.data, imageData.width, imageData.height);
+					
+					var json = JSON.parse(code.data);
+					console.log(json);
+					if (saveLocal(json)) {
+						app.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+					} else {
+						alert('Already Exist!');
+					}
+					previewImage.style.display = 'none';
+				}, 1000);
+				
+				qrCodeContainer.style.display = 'none';
+			};
+			reader.readAsDataURL(file);
+		} else {
+			alert('Please drop an image file.');
+		}
+	}
+}
