@@ -49,8 +49,17 @@ document.getElementById('to-csv').addEventListener('click', function (e) {
 });
 
 function saveLocal(json) {
-	dataObject.push(json);
-	localStorage.setItem('dataObject', JSON.stringify(dataObject));
+	var jsonData = new JSONQuery(dataObject);
+	var query = {
+		select: { fields: '*' },
+		where: { condition: { field: 'id', operator: '=', value: json.id } }
+	};
+	var result = jsonData.execute(query);
+	// console.log(result, query);
+	if (result.length == 0) {
+		dataObject.push(json);
+		localStorage.setItem('dataObject', JSON.stringify(dataObject));
+	}
 }
 
 function generateQRCode(e) {
