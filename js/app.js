@@ -16,9 +16,9 @@ var app = new Vue({
 				json['date'] = getDateNow();
 				if (saveLocal(json)) {
 					self.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
-					alert('Successful!');
+					alert('"' + json.lastname + ', ' + json.firstname +'" was Successfully logged in!');
 				} else {
-					alert('Already Exist!');
+					alert('"' + json.lastname + ', ' + json.firstname +'" Already Exist!');
 				}
 			} catch (error) {
 				console.log(error);
@@ -88,7 +88,7 @@ function generateQRCode(e) {
 
 	QRCode.toCanvas(qrCodeContainer, qrInput, function (error) {
 		if (error) console.error(error)
-		console.log('success!');
+		// console.log('success!');
 		var pngData = qrCodeContainer.toDataURL("image/png");
 		img.src = pngData;
 		qrCodeContainer.style.display = 'none';
@@ -205,12 +205,12 @@ function handleDrop(event) {
 					
 					var json = JSON.parse(code.data);
 					json['date'] = getDateNow();
-					console.log(json);
+					// console.log(json);
 					if (saveLocal(json)) {
 						app.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
-						alert('Successful!');
+						alert('"' + json.lastname + ', ' + json.firstname +'" was Successfully logged in!');
 					} else {
-						alert('Already Exist!');
+						alert('"' + json.lastname + ', ' + json.firstname +'" Already Exist!');
 					}
 					previewImage.style.display = 'none';
 				}, 1000);
@@ -243,6 +243,6 @@ function getDateNow(timestamp) {
 	// Combine the components into a single string
 	var dateTimeString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-	console.log(dateTimeString); // Output the formatted date and time
+	// console.log(dateTimeString); // Output the formatted date and time
 	return dateTimeString;
 }
