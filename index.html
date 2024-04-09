@@ -15,16 +15,25 @@
 			<div class="sidebar">
 				<section class="cameras">
 					<h2>Cameras</h2>
-					<ul><!---->
-						<li><span title="VGA WebCam" class="active">VGA WebCam</span> <!----></li>
+					<ul>
+						<li v-if="cameras.length === 0" class="empty">No cameras found</li>
+						<li v-for="camera in cameras">
+							<span v-if="camera.id == activeCameraId" :title="formatName(camera.name)" class="active">{{
+								formatName(camera.name) }}</span>
+							<span v-if="camera.id != activeCameraId" :title="formatName(camera.name)">
+								<a @click.stop="selectCamera(camera)">{{ formatName(camera.name) }}</a>
+							</span>
+						</li>
 					</ul>
 				</section>
 				<section class="scans">
 					<h2>Logged In QR Codes</h2>
-					<ul>
-						<li class="empty">No Logins yet</li>
+					<ul v-if="scans.length === 0">
+						<li class="empty">No scans yet</li>
 					</ul>
-					<ul></ul>
+					<transition-group name="scans" tag="ul">
+						<li v-for="scan in scans" :key="scan.date" :title="scan.content">{{ scan.content }}</li>
+					</transition-group>
 				</section>
 				<section class="scans">
 					<h2>Manual Log In and QR Code Generator</h2>
