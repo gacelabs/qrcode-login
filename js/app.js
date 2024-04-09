@@ -54,6 +54,7 @@ var app = new Vue({
 						// Failed to start the scanner
 						console.error('Error starting scanner:', error);
 						alert('Failed to start scanner. Please try again.');
+						window.location.reload(true);
 					});
 				}
 			}
