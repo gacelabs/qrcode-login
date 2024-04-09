@@ -1,0 +1,63 @@
+<html>
+
+	<head>
+		<title>Instascan - Demo</title>
+		<link rel="icon" type="image/png" href="favicon.png">
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="js/adapter.min.js"></script>
+		<script type="text/javascript" src="js/vue.min.js"></script>
+		<script type="text/javascript" src="js/instascan.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="sidebar">
+				<section class="cameras">
+					<h2>Cameras</h2>
+					<ul>
+						<li class="empty">No cameras found</li>
+					</ul>
+				</section>
+				<section class="scans">
+					<h2>Logged In QR Codes</h2>
+					<ul class="attendances">
+						<li class="empty">No Logins yet</li>
+					</ul>
+					<ul></ul>
+				</section>
+				<section class="scans">
+					<h2>Manual Log In and QR Code Generator</h2>
+					<ul>
+						<li class="empty" id="registerForm">
+							<form onsubmit="generateQRCode(event);">
+								<div>
+									<label for="id" style="margin-right: 50px;">ID:&nbsp;&nbsp;</label>
+									<input type="text" id="id" name="id" required>
+								</div>
+								<div>
+									<label for="firstname" style="margin-right: 1px;">First Name:</label>
+									<input type="text" id="firstname" name="firstname" required>
+								</div>
+								<div>
+									<label for="lastname" style="margin-right: 2px;">Last Name:</label>
+									<input type="text" id="lastname" name="lastname" required>
+								</div>
+								<center style="margin-top: 10px;">
+									<button type="submit">Sign In & Create QR Code</button>
+								</center>
+							</form>
+						</li>
+					</ul>
+					<ul></ul>
+					<canvas id="qr-code"></canvas>
+					<center>
+						<img src="" alt="qr-code" style="display: none; cursor: pointer; margin: 10%;" id="qr-code-img">
+					</center>
+				</section>
+			</div>
+			<div class="preview-container"><video id="preview" autoplay="autoplay" class="active" style="transform: scaleX(-1);"></video></div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</body>
+
+</html>
