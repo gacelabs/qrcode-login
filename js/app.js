@@ -42,8 +42,21 @@ var app = new Vue({
 			return name || '(unknown)';
 		},
 		selectCamera: function (camera) {
+			var prevCameraId = this.activeCameraId;
 			this.activeCameraId = camera.id;
-			this.scanner.start(camera);
+			this.cameras.forEach(function (cam) {
+				cam.stop();
+			});
+			try {
+				this.scanner.start(camera);
+			} catch (e) {
+				console.error(e);
+				this.cameras.forEach(function (cam) {
+					if (cam.id == prevCameraId) {
+						this.scanner.start(cam);
+					}
+				});
+			}
 		}
 	}
 });
