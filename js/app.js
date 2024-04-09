@@ -11,13 +11,16 @@ var app = new Vue({
 		var self = this;
 		self.scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 5 });
 		self.scanner.addListener('scan', function (content, image) {
-			var json = JSON.parse(content);
-			if (saveLocal(json)) {
-				try {
-					self.scans.unshift({ date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
-				} catch (error) {
-					self.scans.unshift({ date: +(Date.now()), content: 'Invalid QR Code!' });
+			try {
+				if (saveLocal(json)) {
+					var json = JSON.parse(content);
+					self.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+				} else {
+					alert('Invalid QR Code!');
 				}
+			} catch (error) {
+				console.log(error);
+				alert('Invalid QR Code!');
 			}
 		});
 		Instascan.Camera.getCameras().then(function (cameras) {
@@ -42,6 +45,8 @@ var app = new Vue({
 		}
 	}
 });
+
+localStorage.clear();
 
 document.getElementById('to-csv').addEventListener('click', function (e) {
 	var jsonString = localStorage.getItem('dataObject');
@@ -77,12 +82,13 @@ function generateQRCode(e) {
 	var qrInput = JSON.stringify(json);
 	// console.log(qrInput);
 	var qrCodeContainer = document.getElementById("qr-code");
+	var img = document.getElementById("qr-code-img");
+	img.style.display = 'none';
 
 	QRCode.toCanvas(qrCodeContainer, qrInput, function (error) {
 		if (error) console.error(error)
 		console.log('success!');
 		var pngData = qrCodeContainer.toDataURL("image/png");
-		var img = document.getElementById("qr-code-img");
 		img.src = pngData;
 		qrCodeContainer.style.display = 'none';
 		img.style.display = 'block';
