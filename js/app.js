@@ -13,13 +13,12 @@ var app = new Vue({
 		self.scanner.addListener('scan', function (content, image) {
 			try {
 				var json = JSON.parse(content);
-				json['date'] = getDateNow();
 				if (saveLocal(json)) {
-					// self.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname + ', ' + json.firstname) });
+					// self.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname.trim() + ', ' + json.firstname.trim()) });
 					appendData(self, json);
-					alert('"' + json.lastname + ', ' + json.firstname +'" was Successfully logged in!');
+					alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() +'" was Successfully logged in!');
 				} else {
-					alert('"' + json.lastname + ', ' + json.firstname +'" Already Exist!');
+					alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() +'" Already Exist!');
 				}
 			} catch (error) {
 				console.log(error);
@@ -72,6 +71,7 @@ document.getElementById('to-csv').addEventListener('click', function (e) {
 });
 
 function saveLocal(json) {
+	json['date'] = getDateNow();
 	var jsonData = new JSONQuery(dataObject);
 	var query = {
 		select: { fields: '*' },
@@ -142,16 +142,15 @@ function generateQRCode(e) {
 			} catch (error) {
 				// Error occurred while sharing the image
 				console.error('Error sharing QR Code:', error);
-				alert('Error sharing QR Code. Please try again.');
+				// alert('Error sharing QR Code. Please try again.');
 			}
 		});
 		img.parentNode.insertBefore(shareBtn, img.nextSibling);
 
-		json['date'] = getDateNow();
 		// console.log(json);
 		if (saveLocal(json)) {
 			appendData(app, json);
-			alert('"' + json.lastname + ', ' + json.firstname + '" was Successfully logged in!');
+			alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!');
 		}
 	});
 }
@@ -252,13 +251,12 @@ function runDragnDrop() {
 	
 						if (code) {
 							var json = JSON.parse(code.data);
-							json['date'] = getDateNow();
 							// console.log(json);
 							if (saveLocal(json)) {
 								appendData(app, json);
-								alert('"' + json.lastname + ', ' + json.firstname + '" was Successfully logged in!');
+								alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!');
 							} else {
-								alert('"' + json.lastname + ', ' + json.firstname + '" Already Exist!');
+								alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" Already Exist!');
 							}
 						} else {
 							alert('Invalid QR Code!');
@@ -324,7 +322,7 @@ function appendData(app, json) {
 	QRCode.toCanvas(qrCodeCanvas, JSON.stringify(json), function (error) {
 		if (error) console.error(error)
 		var pngData = qrCodeCanvas.toDataURL("image/png");
-		var title = (json.lastname + ', ' + json.firstname);
+		var title = (json.lastname.trim() + ', ' + json.firstname.trim());
 		json['img_url'] = pngData;
 		app.scans.unshift({ data: json, date: +(Date.now()), title: title, content: '<b>' + title + '</b><img src="' + pngData + '" style="max-width: 28px; float: right;" />' });
 	});
