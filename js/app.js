@@ -9,7 +9,7 @@ var app = new Vue({
 	},
 	mounted: function () {
 		var self = this;
-		self.scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 1, refractoryPeriod: 2000 });
+		self.scanner = new Instascan.Scanner({ video: document.getElementById('preview'), scanPeriod: 3, refractoryPeriod: 2000 });
 		self.scanner.addListener('scan', function (content, image) {
 			try {
 				var json = JSON.parse(content);
