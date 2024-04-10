@@ -350,8 +350,13 @@ function appendData(app, json) {
 async function shareQR(params) {
 	// console.log(params.data);
 	if (navigator.share) {
+		var imageUrl = params.data.img_url;
+		var response = await fetch(imageUrl);
+		var blob = await response.blob();
+		var file = new File([blob], params.title + '_QRCode.jpg', { type: blob.type });
+		// Share the image using the Web Share API
 		await navigator.share({
-			files: [params.data.img_url],
+			files: [file],
 			title: 'Share QR Code',
 			text: params.title + '_QRCode.jpg'
 		});
