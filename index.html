@@ -29,7 +29,9 @@
 						<li class="empty">No scans yet</li>
 					</ul>
 					<transition-group name="scans" tag="ul">
-						<li v-for="scan in scans" :key="scan.date" :title="scan.content">{{ scan.content }}</li>
+						<li v-for="scan in scans" :key="scan.date" :title="scan.title" style="cursor: pointer;" @click.stop="shareQR(scan)">
+							<span v-html="scan.content"></span>
+						</li>
 					</transition-group>
 				</section>
 				<section class="scans">
@@ -38,7 +40,7 @@
 						<p>Drag & Drop to scan QR Code Here</p>
 					</div>
 					<center>
-						<img src="" alt="qr-code" style="display: none; cursor: pointer; margin: 10%;" id="qr-code-img">
+						<img src="" alt="qr-code" style="display: none; cursor: pointer;" id="qr-code-img">
 					</center>
 				</section>
 				<section class="scans">
@@ -60,7 +62,7 @@
 								</div>
 								<center style="margin-top: 10px;">
 									<!-- <button type="submit">Sign In & Create QR Code</button> -->
-									<button type="submit">Create QR Code</button>
+									<button type="submit">Create QR Code & Login in</button>
 								</center>
 							</form>
 						</li>

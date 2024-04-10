@@ -90,7 +90,6 @@ body, html {
 #qr-code-img {
 	max-width: 70%;
 	max-height: 70%;
-	margin-top: 10px;
 }
 
 #dropZone.highlight {
