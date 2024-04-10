@@ -121,36 +121,19 @@ function generateQRCode(e) {
 			try {
 				// Check if the Web Share API is supported by the browser
 				if (navigator.share) {
-					var ctx = qrCodeCanvas.getContext('2d');
-					qrCodeCanvas.width = e.target.width;
-					qrCodeCanvas.height = e.target.height;
-					ctx.drawImage(e.target, 0, 0);
-					// Get the image data from the canvas
-					var imageData = ctx.getImageData(0, 0, qrCodeCanvas.width, qrCodeCanvas.height);
-					// Decode the QR code from the image data
-					var code = jsQR(imageData.data, imageData.width, imageData.height);
-
-					if (code) {
-						var json = JSON.parse(code.data);
-						// Fetch the image URL (replace 'image.jpg' with the actual path to your image)
-						var imageUrl = e.target.src;
-						// Fetch the image blob
-						var response = await fetch(imageUrl);
-						var blob = await response.blob();
-						var name = (json.lastname.trim() + '-' + json.firstname.trim());
-						// Create a file object from the image blob
-						var file = new File([blob], name + '_QRCode.jpg', { type: blob.type });
-						// Share the image using the Web Share API
-						await navigator.share({
-							files: [file],
-							title: 'Share QR Code',
-							text: name + '_QRCode.jpg'
-						});
-	
-						console.log('Image shared successfully.');
-					} else {
-						alert('Invalid QR Code!');
-					}
+					// Fetch the image blob
+					var response = await fetch(img.src);
+					var blob = await response.blob();
+					var name = (json.lastname.trim() + '-' + json.firstname.trim());
+					// Create a file object from the image blob
+					var file = new File([blob], name + '_QRCode.jpg', { type: blob.type });
+					// Share the image using the Web Share API
+					await navigator.share({
+						files: [file],
+						title: 'Share QR Code',
+						text: name + '_QRCode.jpg'
+					});
+					console.log('Image shared successfully.');
 				} else {
 					// Web Share API is not supported
 					console.error('Web Share API is not supported.');
