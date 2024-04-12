@@ -94,17 +94,23 @@ function generateQRCode(e) {
 	var firstname = document.getElementById('firstname').value;
 	var lastname = document.getElementById('lastname').value;
 	var json = { id: id, firstname: firstname, lastname: lastname };
+	
+	// console.log(json);
+	if (saveLocal(json)) {
+		appendData(app, json);
+		alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!');
+	}
 
-	var qrInput = JSON.stringify(json);
+	/* var qrInput = JSON.stringify(json);
 	// console.log(qrInput);
 	var qrCodeCanvas = document.getElementById("qr-code");
 	var img = document.getElementById("qr-code-img");
-	img.style.display = 'none';
-	var shareBtn = document.getElementsByClassName('share-appended');
+	img.style.display = 'none'; */
+
+	/* var shareBtn = document.getElementsByClassName('share-appended');
 	if (shareBtn.length) {
 		shareBtn[0].remove();
 	}
-
 	QRCode.toCanvas(qrCodeCanvas, qrInput, function (error) {
 		if (error) console.error(error)
 		// console.log('success!');
@@ -146,13 +152,7 @@ function generateQRCode(e) {
 			}
 		});
 		img.parentNode.insertBefore(shareBtn, img.nextSibling);
-
-		// console.log(json);
-		if (saveLocal(json)) {
-			appendData(app, json);
-			alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!');
-		}
-	});
+	}); */
 }
 
 function downloadCSV(jsonData, filename) {
