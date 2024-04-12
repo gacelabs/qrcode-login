@@ -16,13 +16,13 @@ var app = new Vue({
 				if (saveLocal(json)) {
 					// self.scans.unshift({ data: json, date: +(Date.now()), content: (json.lastname.trim() + ', ' + json.firstname.trim()) });
 					appendData(self, json);
-					alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() +'" was Successfully logged in!');
+					showAlert('"' + json.lastname.trim() + ', ' + json.firstname.trim() +'" was Successfully logged in!', 'good');
 				} else {
-					alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() +'" Already Exist!');
+					showAlert('"' + json.lastname.trim() + ', ' + json.firstname.trim() +'" Already Exist!', 'bad');
 				}
 			} catch (error) {
 				console.log(error);
-				alert('Invalid QR Code!');
+				showAlert('Invalid QR Code!', 'bad');
 			}
 		});
 		Instascan.Camera.getCameras().then(function (cameras) {
@@ -53,7 +53,7 @@ var app = new Vue({
 					}).catch(error => {
 						// Failed to start the scanner
 						console.error('Error starting scanner:', error);
-						alert('Failed to start scanner. Please try again.');
+						showAlert('Failed to start scanner. Please try again.', 'bad');
 						window.location.reload(true);
 					});
 				}
@@ -98,7 +98,7 @@ function generateQRCode(e) {
 	// console.log(json);
 	if (saveLocal(json)) {
 		appendData(app, json);
-		alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!');
+		showAlert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!', 'good');
 	}
 
 	/* var qrInput = JSON.stringify(json);
@@ -143,12 +143,12 @@ function generateQRCode(e) {
 				} else {
 					// Web Share API is not supported
 					console.error('Web Share API is not supported.');
-					alert('Web Share API is not supported in this browser.');
+					showAlert('Web Share API is not supported in this browser.', 'bad');
 				}
 			} catch (error) {
 				// Error occurred while sharing the image
 				console.error('Error sharing QR Code:', error);
-				// alert('Error sharing QR Code. Please try again.');
+				// showAlert('Error sharing QR Code. Please try again.', 'bad');
 			}
 		});
 		img.parentNode.insertBefore(shareBtn, img.nextSibling);
@@ -234,7 +234,7 @@ function runDragnDrop() {
 				var reader = new FileReader();
 				reader.onload = function (event) {
 					previewImage.src = event.target.result;
-					previewImage.style.display = 'block';
+					// previewImage.style.display = 'block';
 	
 					var qrCodeCanvas = document.getElementById("qr-code");
 	
@@ -254,12 +254,12 @@ function runDragnDrop() {
 							// console.log(json);
 							if (saveLocal(json)) {
 								appendData(app, json);
-								alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!');
+								showAlert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" was Successfully logged in!', 'good');
 							} else {
-								alert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" Already Exist!');
+								showAlert('"' + json.lastname.trim() + ', ' + json.firstname.trim() + '" Already Exist!', 'bad');
 							}
 						} else {
-							alert('Invalid QR Code!');
+							showAlert('Invalid QR Code!', 'bad');
 						}
 	
 						previewImage.style.display = 'none';
@@ -273,7 +273,7 @@ function runDragnDrop() {
 				};
 				reader.readAsDataURL(file);
 			} else {
-				alert('Please drop an image file.');
+				showAlert('Please drop an image file.', 'bad');
 			}
 		}
 	}, false);
@@ -344,6 +344,33 @@ async function shareQR(params) {
 	} else {
 		// Web Share API is not supported
 		console.error('Web Share API is not supported.');
-		alert('Web Share API is not supported in this browser.');
+		showAlert('Web Share API is not supported in this browser.', 'bad');
 	}
+}
+
+function showAlert(message, type) {
+	if (type == undefined) type = 'good';
+	// Get the snackbar DIV
+	var snackbar = document.createElement("div");
+	snackbar.className = 'snackbar';
+	snackbar.className += " show " + type;
+	snackbar.innerHTML = message;
+	var preview = document.getElementById('preview');
+	preview.parentNode.insertBefore(snackbar, preview.nextSibling);
+	setTimeout(function () { snackbar.className = snackbar.className.replace("show", "out"); setTimeout(() => {
+		snackbar.remove();
+	}, 300); }, 9000);
+	
+	var snackbars = document.querySelectorAll('.snackbar:not(.out)');
+
+	setTimeout(() => {
+		if (snackbars.length == 2) {
+			snackbars[0].style.bottom = '14%';
+		} else if (snackbars.length > 2) {
+			var num = (9 * (snackbars.length - 2));
+			console.log(num);
+			snackbars[0].style.bottom = 14 + num + '%';
+			console.log(snackbars[0].style.bottom);
+		}
+	}, 1000);
 }
