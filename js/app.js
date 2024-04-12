@@ -323,15 +323,16 @@ function appendData(app, json) {
 		if (error) console.error(error)
 		var pngData = qrCodeCanvas.toDataURL("image/png");
 		var title = (json.lastname.trim() + ', ' + json.firstname.trim());
-		json['img_url'] = pngData;
-		app.scans.unshift({ data: json, date: +(Date.now()), title: title, content: '<b>' + title + '</b><img src="' + pngData + '" style="max-width: 28px; float: right;" />' });
+		// json['img_url'] = pngData;
+		app.scans.unshift({ data: json, date: +(Date.now()), title: title, content: '<b>' + title + '</b><img @click.stop="shareQR(' + json + ', $event)" src="' + pngData + '" style="max-width: 28px; float: right; cursor: pointer;" />' });
 	});
 }
 
-async function shareQR(params) {
-	// console.log(params.data);
+async function shareQR(params, event) {
+	// console.log(params.data, event.target.parentNode.getElementsByTagName('IMG'), event.target.tagName);
 	if (navigator.share) {
-		var imageUrl = params.data.img_url;
+		var img = event.target.parentNode.getElementsByTagName('IMG');
+		var imageUrl = img[0].src;
 		var response = await fetch(imageUrl);
 		var blob = await response.blob();
 		var file = new File([blob], params.title + '_QRCode.jpg', { type: blob.type });

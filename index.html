@@ -29,8 +29,8 @@
 						<li class="empty">No scans yet</li>
 					</ul>
 					<transition-group name="scans" tag="ul">
-						<li v-for="scan in scans" :key="scan.date" :title="scan.title" style="cursor: pointer;" @click.stop="shareQR(scan)">
-							<span v-html="scan.content"></span>
+						<li v-for="scan in scans" :key="scan.date" :title="scan.title">
+							<span v-html="scan.content" @click.stop="shareQR(scan, $event)" style="cursor: pointer;"></span>
 						</li>
 					</transition-group>
 				</section>
