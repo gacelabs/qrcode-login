@@ -355,22 +355,22 @@ function showAlert(message, type) {
 	snackbar.className = 'snackbar';
 	snackbar.className += " show " + type;
 	snackbar.innerHTML = message;
+	
 	var preview = document.getElementById('preview');
 	preview.parentNode.insertBefore(snackbar, preview.nextSibling);
+	
 	setTimeout(function () { snackbar.className = snackbar.className.replace("show", "out"); setTimeout(() => {
+		snackbar.style = '';
 		snackbar.remove();
-	}, 300); }, 9000);
+	}, 300); }, 7000);
 	
 	var snackbars = document.querySelectorAll('.snackbar:not(.out)');
-
 	setTimeout(() => {
 		if (snackbars.length == 2) {
 			snackbars[0].style.bottom = '14%';
 		} else if (snackbars.length > 2) {
 			var num = (9 * (snackbars.length - 2));
-			console.log(num);
 			snackbars[0].style.bottom = 14 + num + '%';
-			console.log(snackbars[0].style.bottom);
 		}
 	}, 1000);
 }
