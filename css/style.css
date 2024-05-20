@@ -162,3 +162,35 @@ body, html {
     background-color: beige;
     opacity: 0.5;
 }
+
+.qr-lines .left {
+    position: absolute;
+    left: -7px;
+    border-left: 7px solid black;
+    height: 70%;
+    top: 15%;
+}
+
+.qr-lines .top {
+    position: absolute;
+    top: -7px;
+    border-top: 7px solid black;
+    width: 70%;
+    right: 15%;
+}
+
+.qr-lines .right {
+    position: absolute;
+    right: -7px;
+    border-right: 7px solid black;
+    height: 70%;
+    bottom: 15%;
+}
+
+.qr-lines .bottom {
+    position: absolute;
+    bottom: -7px;
+    border-bottom: 7px solid black;
+    width: 70%;
+    left: 15%;
+}
