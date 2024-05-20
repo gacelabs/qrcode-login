@@ -75,6 +75,7 @@ body, html {
   display: flex;
   width: 100%;
   overflow: hidden;
+  position: relative;
 }
 
 #dropZone {
@@ -152,4 +153,12 @@ body, html {
 @keyframes fadeout {
   from {bottom: 30px; opacity: 1;}
   to {bottom: 0; opacity: 0;}
+}
+
+.qr-lines {
+    position: absolute;
+    padding: 22%;
+    border: 7px solid yellow;
+    background-color: beige;
+    opacity: 0.5;
 }
